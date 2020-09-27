@@ -67,7 +67,11 @@ def update_calendar_and_airtable(cal, response_json):
         r = airtable_request('patch', json=payload)
 
 
-if __name__ == "__main__":
+def main():
     response_json = get_updated_records()
     cal = calendar(CALENDAR_ID)
     update_calendar_and_airtable(cal, response_json)
+    print('someting')
+
+if __name__ == "__main__":
+    main()

@@ -1,5 +1,7 @@
-from request import main
+from timeframe_sync import timeframe_sync
+from calendar_sync import calendar_sync
 
 def lambda_handler(event, context):
-    main()
+    timeframe_sync()
+    calendar_sync()
     return

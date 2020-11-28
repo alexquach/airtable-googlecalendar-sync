@@ -2,3 +2,6 @@
 .env
 service-account-credentials.json
 function.zip
+function_old.zip
+function
+function_old

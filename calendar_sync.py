@@ -9,6 +9,10 @@ CALENDAR_ID = os.getenv('CALENDAR_ID')  # Airtable Tasks
 
 
 def round_up_15_mins(tm):
+    """
+    Args:
+        tm (datetime):
+    """
     tm += timedelta(minutes=14)
 
     return tm - timedelta(minutes=tm.minute % 15,
@@ -38,8 +42,10 @@ def update_calendar_and_airtable(cal, response_json):
 
     for record in response_json['records']:
         name = get_in(record, ["fields", "Name"])
+        airtable_record_id = get_in(record, ['id'])
         print(name)
-        cal.create_event(name, currentTime)
+
+        created_event = cal.create_event(name, currentTime, airtable_record_id)
 
         if len(payload['records']) >= MAX_AIRTABLE_PATCH:
             r = airtable_request('patch', json=payload)
@@ -48,7 +54,8 @@ def update_calendar_and_airtable(cal, response_json):
         payload['records'].append({
             "id": record['id'],
             "fields": {
-                "setTodayDate": currentTime.isoformat()
+                "setTodayDate": currentTime.isoformat(),
+                ""
             }})
 
     if len(payload['records']) > 0:

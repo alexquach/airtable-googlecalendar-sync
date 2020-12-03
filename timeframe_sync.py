@@ -28,7 +28,7 @@ def get_active_records():
         Deadline set (i.e. 11/27/2020)
         lastStatus not 'Done'
     """
-    fields = ["Name", "Deadline", "Status", "setCalendarDate", "Deadline Group", "calendarEventId", "duration", "lastDeadline", "lastCalendarDeadline"]
+    fields = ["Name", "Deadline", "Status", "Deadline Group", "calendarEventId", "duration", "lastDeadline", "lastCalendarDeadline"]
     maxRecords = 100
     formula = "AND(NOT({Deadline}=''), NOT({lastStatus}='Done'))"
     params = {"maxRecords": maxRecords,
@@ -46,24 +46,23 @@ def process_new_record(update_fields, record, cal):
         2. Populates the Deadline Group and Day columns in AirTable
 
     New Records are defined as:
-        setCalendarDate is not set
+        lastDeadline is not set
         Deadline is set
     """
     deadline = get_in(record, ["fields", "Deadline"])
-    setCalendarDate = get_in(record, ["fields", "setCalendarDate"])
+    lastDeadline = get_in(record, ["fields", "lastDeadline"])
 
-    if deadline and not setCalendarDate:
+    if deadline and not lastDeadline:
         name = get_in(record, ["fields", "Name"])
         airtable_record_id = get_in(record, ['id'])
         deadline_date = datetime.strptime(deadline, "%Y-%m-%d") + timedelta(hours=16)
-        currentTime = round_up_15_mins(datetime.utcnow())
 
         created_event = cal.create_event(name, deadline_date, airtable_record_id)
 
         update_fields.update({
             "calendarEventId": created_event['id'],
             "duration": 1,
-            "setCalendarDate": currentTime.isoformat(),
+            "lastDeadline": deadline,
         })
     return update_fields
 
@@ -75,7 +74,7 @@ def process_deadline_change(update_fields, record, cal):
     if deadline != last_deadline:
         calendar_event_id = get_in(record, ["fields", "calendarEventId"])
         duration = get_in(record, ["fields", "duration"])
-        lastCalendarDeadline = get_in(record, ["fields", "lastCalendarDeadline"], "")
+        lastCalendarDeadline = get_in(record, ["fields", "lastCalendarDeadline"], "")[0:10]
         airtable_record_id = get_in(record, ["id"])
         deadline_date = datetime.strptime(deadline, "%Y-%m-%d") + timedelta(hours=16)
         days_to_sunday = 6 - deadline_date.weekday()
@@ -84,7 +83,10 @@ def process_deadline_change(update_fields, record, cal):
         if not duration:
             duration = 1
 
+        # valid calendar_event_id; and wasn't recently updated by gcal webhook
         if calendar_event_id and lastCalendarDeadline != deadline:
+            print(deadline)
+            print(lastCalendarDeadline)
             cal.patch_event(calendar_event_id, airtable_record_id, start=deadline_date, duration=duration)
         
         update_fields.update({

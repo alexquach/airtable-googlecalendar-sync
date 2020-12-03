@@ -55,15 +55,17 @@ def process_new_record(update_fields, record, cal):
     if deadline and not lastDeadline:
         name = get_in(record, ["fields", "Name"])
         airtable_record_id = get_in(record, ['id'])
+        calendar_event_id = get_in(record, ["fields", "calendarEventId"])
         deadline_date = datetime.strptime(deadline, "%Y-%m-%d") + timedelta(hours=16)
 
-        created_event = cal.create_event(name, deadline_date, airtable_record_id)
+        if not calendar_event_id:
+            created_event = cal.create_event(name, deadline_date, airtable_record_id)
 
-        update_fields.update({
-            "calendarEventId": created_event['id'],
-            "duration": 1,
-            "lastDeadline": deadline,
-        })
+            update_fields.update({
+                "calendarEventId": created_event['id'],
+                "duration": 1,
+                "lastDeadline": deadline,
+            })
     return update_fields
 
 

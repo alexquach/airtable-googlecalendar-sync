@@ -1,3 +1,7 @@
+""" calendar_request.py
+
+This module creates a class for simplified interfacing with the Google Calendar API.
+"""
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
 
@@ -8,23 +12,41 @@ SERVICE_ACCOUNT_FILE = './service-account-credentials.json'
 
 TIMEZONE = 'UTC'
 
-class calendar:
-    def __init__(self, calendar_id):
+class Calendar:
+    """ This class contains the necessary information to interact with the Google Calendar API
+    for a specific calendar.
+
+    It proves methods to GET, PATCH, and POST events.
+    
+    Attributes:
+        calendar_id: String containing the Google Calendar UUID 
+        credentials: Google Credentials stored in the service-account-credential.json
+        service: Instantitated Google Calendar v3 service
+    """
+    def __init__(self, calendar_id: str):
+        """ Creates a :obj:`Calendar` object 
+        
+        Args:
+            calendar_id: The string containing the Gcal UUID for which we want to instantiate a :obj:`calendar`
+        """
         self.calendar_id = calendar_id
         self.credentials = service_account.Credentials.from_service_account_file(
             SERVICE_ACCOUNT_FILE, scopes=SCOPES)
 
         self.service = build('calendar', 'v3', credentials=self.credentials)
 
-    def create_event(self, title, start, airtable_record_id, duration=1, timezone=TIMEZONE):
+    def create_event(self, title, start, airtable_record_id, duration=1, timezone=TIMEZONE) -> Dict:
         """ Create a Google Calendar event in the specified calendar object
 
         Args:
-            title (str):
-            start (datetime):
-            airtable_record_id (str):
-            duration (float):
-            timezone (str): 
+            title (str): A string containing the event title/name 
+            start (datetime): A datetime indicating the start time for the event
+            airtable_record_id (str): Id corresponding to the airtable record representation for this event
+            duration (float): The duration (in hours) that the event should last
+            timezone (str): (optional) The timezone in which the event should be encoded
+
+        Returns:
+            Dict with the Gcal API's response to the insert request
         """
         event_body = {
             'summary': title,
@@ -48,13 +70,16 @@ class calendar:
         """ Patch a Google Calendar event in the specified calendar object
 
         Args:
-            event_id (str):
+            event_id (str): String containing the Id for the existing Gcal event to be edited 
+            airtable_record_id (str): Id corresponding to the airtable record representation for this event
             color_id (str): string version of number (1-11) based off of Gcal event colors
-            title (str):
-            start (datetime):
-            airtable_record_id (str):
-            duration (float):
-            timezone (str): 
+            title (str): (optional) If present, the string to update the event title/name as
+            start (datetime): (optional) If present, the new start time for the event
+            duration (float): (optional) If present, the new duration (in hours) for the event
+            timezone (str): (optional) If present, the timezone in which the event should be encoded 
+        
+        Returns:
+            Dict with the Gcal API's response to the patch request
         """
         if not event_id:
             return None
@@ -81,6 +106,14 @@ class calendar:
         return patched_event
     
     def get_event(self, event_id):
+        """ Get a Google Calendar event in the specified calendar object
+
+        Args:
+            event_id (str): String containing the Id for the existing Gcal event to retrieve 
+        
+        Returns:
+            Dict with the Gcal API's response to the get request
+        """
         if not event_id:
             return None
 

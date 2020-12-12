@@ -1,3 +1,7 @@
+""" sync_script.py
+
+This module provides a script to synchronize a Airtable table and a Google Calendar.
+"""
 import os
 from datetime import datetime, timedelta
 from funcy import get_in, partial
@@ -33,19 +37,19 @@ def get_active_records() -> Dict:
     """ Queries Airtable API for active records
 
     Retrieves the following fields:
-        Name: Main string identifier for the record
-        Deadline: String in the format (MM/DD/YYYY)
-        Status: Kanban-esque status ("Todo"/"In Progress"/"Done"/etc)
-        Deadline Group: Grouping of deadlines (Grouped by weeks + Today/Backlog)
-        calendarEventId: Corresponding Gcal calendar event id for the record
-        duration: estimated duration of event/task (in hours)
-        lastDeadline: the previous state of the `Deadline` field, used for sync'ing purposes
-        lastCalendarDeadline: the previous state of the `Deadline` field from the Calendar webhook,
+        - Name: Main string identifier for the record
+        - Deadline: String in the format (MM/DD/YYYY)
+        - Status: Kanban-esque status ("Todo"/"In Progress"/"Done"/etc)
+        - Deadline Group: Grouping of deadlines (Grouped by weeks + Today/Backlog)
+        - calendarEventId: Corresponding Gcal calendar event id for the record
+        - duration: estimated duration of event/task (in hours)
+        - lastDeadline: the previous state of the `Deadline` field, used for sync'ing purposes
+        - lastCalendarDeadline: the previous state of the `Deadline` field from the Calendar webhook,
             also used for sync'ing purposes to know when webhook last editted record
 
     The formula queries for Active Records, which are defined as:
-        Deadline set (i.e. 11/27/2020)
-        lastStatus not 'Done'
+        - Deadline set (i.e. 11/27/2020)
+        - lastStatus not 'Done'
 
     Returns:
         Dict with the response from Airtable for the get request
@@ -66,8 +70,8 @@ def process_new_record(update_fields: dict, record: dict, calendar: Calendar) ->
     """ Detects and adds New Records to the update_field payload
 
     New Records are defined as:
-        lastDeadline is not set
-        Deadline is set
+        - lastDeadline is not set
+        - Deadline is set
 
     Note:
         Events/Tasks created by the Gcal Webhook are considered New Records
@@ -80,7 +84,7 @@ def process_new_record(update_fields: dict, record: dict, calendar: Calendar) ->
     Args:
         update_fields: The payload dictionary that will be sent in a patch/post request to the Airtable API
         record: The individual record being processed
-        calendar: The :obj:`Calendar` instance corresponding to the calendar out of which we're working
+        calendar: The :obj:`calendar_request.Calendar` instance corresponding to the calendar out of which we're working
 
     Returns:
         An updated-version of `update_fields` to be sent to airtable in a patch/post request
@@ -117,7 +121,7 @@ def process_deadline_change(update_fields: dict, record: dict, calendar: Calenda
     Args:
         update_fields: The payload dictionary that will be sent in a patch/post request to the Airtable API
         record: The individual record being processed
-        calendar: The :obj:`Calendar` instance corresponding to the calendar out of which we're working
+        calendar: The :obj:`calendar_request.Calendar` instance corresponding to the calendar out of which we're working
 
     Returns:
         An updated-version of `update_fields` to be sent to airtable in a patch/post request
@@ -151,7 +155,7 @@ def process_deadline_change(update_fields: dict, record: dict, calendar: Calenda
     return update_fields
 
 
-def transition_today_record(update_fields: dict, record: dict) => Dict:
+def transition_today_record(update_fields: dict, record: dict) -> Dict:
     """ Transitions records with a deadline that corresponds to the current date
     
     Basically detects whether the `deadline` matches Today's actual date, and updates the
@@ -186,7 +190,7 @@ def transition_done_record(update_fields: dict, record: dict, calendar: Calendar
     Args:
         update_fields: The payload dictionary that will be sent in a patch/post request to the Airtable API
         record: The individual record being processed
-        calendar: The :obj:`Calendar` instance corresponding to the calendar out of which we're working
+        calendar: The :obj:`calendar_request.Calendar` instance corresponding to the calendar out of which we're working
 
     Returns:
         An updated-version of `update_fields` to be sent to airtable in a patch/post request
@@ -219,7 +223,7 @@ def update_records(calendar: Calendar, active_records: dict):
     sent to the Airtable API with :func:`send_nonempty_payload`
 
     Args: 
-        calendar: The :obj:`Calendar` instance corresponding to the calendar out of which we're working
+        calendar: The :obj:`calendar_request.Calendar` instance corresponding to the calendar out of which we're working
         active_records: All of the active records in the Airtable table
     """
     payload = {"records": [], "typecast": True}  

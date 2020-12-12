@@ -6,6 +6,8 @@ verify_ssl = true
 [dev-packages]
 ipykernel = "*"
 rope = "*"
+sphinx = "*"
+sphinx-material = "*"
 
 [packages]
 python-dotenv = "*"

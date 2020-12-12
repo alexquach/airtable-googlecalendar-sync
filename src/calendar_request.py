@@ -2,10 +2,12 @@
 
 This module creates a class for simplified interfacing with the Google Calendar API.
 """
+from typing import Dict
+from datetime import datetime, timedelta
+
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
 
-from datetime import datetime, timedelta
 
 SCOPES = ['https://www.googleapis.com/auth/calendar']
 SERVICE_ACCOUNT_FILE = './service-account-credentials.json'

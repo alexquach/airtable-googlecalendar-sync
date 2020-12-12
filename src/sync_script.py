@@ -55,7 +55,7 @@ def get_active_records() -> Dict:
         Dict with the response from Airtable for the get request
     """
     fields = ["Name", "Deadline", "Status", "Deadline Group", "calendarEventId", "duration", 
-        "lastDeadline", "lastCalendarDeadline"]
+        "lastDeadline", "lastCalendarDeadline", "lastName"]
     maxRecords = 100
     formula = "AND(NOT({Deadline}=''), NOT({lastStatus}='Done'))"
     params = {"maxRecords": maxRecords,
@@ -143,14 +143,47 @@ def process_deadline_change(update_fields: dict, record: dict, calendar: Calenda
 
         # valid calendar_event_id; and wasn't recently updated by gcal webhook
         if calendar_event_id and lastCalendarDeadline != deadline:
-            print(deadline)
-            print(lastCalendarDeadline)
             calendar.patch_event(calendar_event_id, airtable_record_id, start=deadline_date, duration=duration)
         
         update_fields.update({
             "Deadline Group": next_sunday, 
             "Day": DAY_OF_WEEK[deadline_date.weekday()],
             "lastDeadline": deadline
+        })
+    return update_fields
+
+
+def process_name_change(update_fields: dict, record: dict, calendar: Calendar) -> Dict:
+    """ Detects records where the `Name` changed and updates the update_field payload accordingly
+
+    A deadline change is detected when the `Name` does not equal the `lastName` field.
+
+    Actions:
+        1. Updates the Gcal event
+        2. Update the `lastName` field in Airtable
+
+    Args:
+        update_fields: The payload dictionary that will be sent in a patch/post request to the Airtable API
+        record: The individual record being processed
+        calendar: The :obj:`calendar_request.Calendar` instance corresponding to the calendar out of which we're working
+
+    Returns:
+        An updated-version of `update_fields` to be sent to airtable in a patch/post request
+    """
+    name = get_in(record, ["fields", "Name"])
+    last_name = get_in(record, ["fields", "lastName"], "")
+
+    if name != last_name:
+        airtable_record_id = get_in(record, ['id'])
+        calendar_event_id = get_in(record, ["fields", "calendarEventId"])
+
+        # valid calendar_event_id
+        if calendar_event_id:
+            calendar.patch_event(calendar_event_id, airtable_record_id, title=name)
+        
+        print(f'new_name: {name}')
+        update_fields.update({
+            "lastName": name, 
         })
     return update_fields
 
@@ -235,6 +268,7 @@ def update_records(calendar: Calendar, active_records: dict):
         update_fields = dict()
         update_fields = process_new_record(update_fields, record, calendar)
         update_fields = process_deadline_change(update_fields, record, calendar)
+        update_fields = process_name_change(update_fields, record, calendar)
         update_fields = transition_today_record(update_fields, record)
         update_fields = transition_done_record(update_fields, record, calendar)
 

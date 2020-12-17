@@ -29,7 +29,7 @@ class Calendar:
         """ Creates a :obj:`Calendar` object 
         
         Args:
-            calendar_id: The string containing the Gcal UUID for which we want to instantiate a :obj:`calendar`
+            calendar_id (str): The string containing the Gcal UUID for which we want to instantiate a :obj:`calendar`
         """
         self.calendar_id = calendar_id
         self.credentials = service_account.Credentials.from_service_account_file(

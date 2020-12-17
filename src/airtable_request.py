@@ -1,4 +1,4 @@
-""" request.py
+""" airtable_request.py
 
 This module abstracts and accounts for paging when sending requests to the Airtable API
 """
@@ -31,7 +31,8 @@ def update_payload_state(payload: dict, request_type: str) -> Dict:
         request_type: String denoting what type of request ("get", "post", "patch) etc
 
     Returns:
-        Empty Airtable API-friendly payload template
+        If the payload is sent, returns an empty Airtable API-friendly payload template.
+        Else, returns the inputted payload 
     """
     if len(payload['records']) >= MAX_AIRTABLE_PATCH:
         _ = airtable_request(request_type, json=payload)

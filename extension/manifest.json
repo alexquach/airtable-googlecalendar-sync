@@ -1,0 +1,11 @@
+{
+    "name": "Life Management New Tab",
+    "description": "Override the new tab page with custom life management content",
+    "version": "0.1.0",
+    "incognito": "spanning",
+    "chrome_url_overrides": {
+      "newtab": "index.html"
+    },
+    "manifest_version": 2
+    //"content_security_policy": "script-src 'self' https://calendar.google.com/calendar/embed; object-src 'self' https://calendar.google.com/calendar/embed"
+  }

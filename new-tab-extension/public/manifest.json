@@ -1,0 +1,14 @@
+{
+  "name": "React Life Management New Tab",
+  "description": "Override the new tab page with custom life management content",
+  "version": "0.1.0",
+  "incognito": "spanning",
+  "chrome_url_overrides": {
+    "newtab": "index.html"
+  },
+  "manifest_version": 2,
+  "content_security_policy": "default-src 'self'; script-src 'self' 'sha256-p6iINqVTcI+LySBZIK9MVuTKDbOwYVBZmxl5lQGg3XU=' 'unsafe-inline' 'unsafe-eval'; style-src https: 'unsafe-inline'; frame-src https://calendar.google.com/; img-src https://ph-files.imgix.net; connect-src https://api.airtable.com http://gcal-webhook.herokuapp.com/day https://api.producthunt.com;"
+  // "content_security_policy": "default-src https:; script-src https: 'unsafe-inline'; style-src https: 'unsafe-inline'"
+  // Change to public/manifest.json
+}
+// root is in public/

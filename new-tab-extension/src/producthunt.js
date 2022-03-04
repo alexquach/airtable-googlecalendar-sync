@@ -1,13 +1,13 @@
 const QUERY_URL = "https://api.producthunt.com/v2/api/graphql";
 const TOKEN_URL = "https://api.producthunt.com/v2/oauth/token";
 
-TOKEN_QUERY = {
+const TOKEN_QUERY = {
     "client_id": "mhlOGIZkEIJyAneh_VEdiIMbe-bzirnGyHduy6FFDZc",
     "client_secret": "34HwRl2jSpI-LPl35ylzJW5KDZe3Dmam9-avpLjqJ10",
     "grant_type": "client_credentials"
 }
 
-FEATURED_QUERY = {
+const FEATURED_QUERY = {
     "query": "query {posts(first: 10, featured:true) {edges { node { id, name, tagline, slug, thumbnail { url }, website, votesCount } } } } "
 }
 
@@ -46,20 +46,20 @@ function get_featured_posts(access_token) {
     xhr.addEventListener('readystatechange', function () {
         if (xhr.readyState == 4) {
             if (xhr.status == 200) {
-                posts = JSON.parse(xhr.response)['data']['posts']['edges']
+                var posts = JSON.parse(xhr.response)['data']['posts']['edges']
                 console.log(posts)
                 
-                table = document.querySelector('.product_hunt');
-                for (i in posts) {
-                    post_name = posts[i]['node']['name'];
-                    tagline = posts[i]['node']['tagline'];
-                    votesCount = posts[i]['node']['votesCount'];
-                    website = posts[i]['node']['website'];
-                    thumbnail = posts[i]['node']['thumbnail']['url'];
-                    slug = posts[i]['node']['slug'];
-                    product_hunt_site = "https://www.producthunt.com/posts/" + slug
+                var table = document.querySelector('.product_hunt');
+                for (var i in posts) {
+                    var post_name = posts[i]['node']['name'];
+                    var tagline = posts[i]['node']['tagline'];
+                    var votesCount = posts[i]['node']['votesCount'];
+                    var website = posts[i]['node']['website'];
+                    var thumbnail = posts[i]['node']['thumbnail']['url'];
+                    var slug = posts[i]['node']['slug'];
+                    var product_hunt_site = "https://www.producthunt.com/posts/" + slug
 
-                    new_elem = document.createElement('div');
+                    var new_elem = document.createElement('div');
                     new_elem.classList.add('product')
                     new_elem.innerHTML = `
                         <a href="${product_hunt_site}">

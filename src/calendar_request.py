@@ -104,6 +104,7 @@ class Calendar:
         if title:
             event_body.update({'summary': title,})
 
+        # TODO: Error Handling
         patched_event = self.service.events().patch(calendarId=self.calendar_id, eventId=event_id, body=event_body).execute()
         print('Event patched: %s' % (patched_event.get('htmlLink')))
 

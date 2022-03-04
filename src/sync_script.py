@@ -286,6 +286,7 @@ def sync():
     """ Retrieves active records and then updates the records with outlined logic """
     active_records = get_active_records()
     calendar = Calendar(CALENDAR_ID)
+    print("before update")
     update_records(calendar, active_records)
 
 

@@ -4,6 +4,8 @@ body {
     text-align:center;
     transition: background-color .75s ease;
     font-family: "Lato", "Helvetica Neue", "Lucida Grande", sans-serif;
+    display: flex;
+    flex-flow: row nowrap;
   }
 
 .product_hunt_title {
@@ -64,4 +66,8 @@ font-family: "Norwester", "Helvetica Neue", "Lucida Grande", sans-serif;
 font-size: 14px;
 font-weight: normal;
 margin-bottom: 0px;
+}
+
+.ph {
+    flex-grow: 1
 }

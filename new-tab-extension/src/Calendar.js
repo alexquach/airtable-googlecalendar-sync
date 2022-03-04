@@ -11,7 +11,7 @@ function Calendar() {
     // axios.get('https://cors-anywhere.herokuapp.com/http://gcal-webhook.herokuapp.com/day')
     axios.get('http://gcal-webhook.herokuapp.com/day')
       .then((response) => {
-        console.log("response", response.data['records']);
+        // console.log("response", response.data['records']);
         var events = response.data['records']
 
         var newEventsList = []
@@ -43,7 +43,7 @@ function Calendar() {
           }
           newEventsList.push(event_)
         }
-        console.log(newEventsList)
+        // console.log(newEventsList)
         setEventsList(newEventsList)
       })
   }, [])

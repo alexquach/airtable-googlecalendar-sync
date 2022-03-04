@@ -5,6 +5,10 @@ import PushupPlot from './PushupPlot.js'
 import './App.css';
 import productScript from "./producthunt.js"
 
+require('dotenv').config()
+console.log(process)
+console.log(process.env)
+
 function App() {
   useEffect(() => {
     const script = document.createElement('script');

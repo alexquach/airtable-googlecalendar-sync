@@ -1,17 +1,17 @@
 const QUERY_URL = "https://api.producthunt.com/v2/api/graphql";
 const TOKEN_URL = "https://api.producthunt.com/v2/oauth/token";
 
-const TOKEN_QUERY = {
-    "client_id": "mhlOGIZkEIJyAneh_VEdiIMbe-bzirnGyHduy6FFDZc",
-    "client_secret": "34HwRl2jSpI-LPl35ylzJW5KDZe3Dmam9-avpLjqJ10",
-    "grant_type": "client_credentials"
-}
-
 const FEATURED_QUERY = {
     "query": "query {posts(first: 10, featured:true) {edges { node { id, name, tagline, slug, thumbnail { url }, website, votesCount } } } } "
 }
+const TOKEN_QUERY = {
+    "client_id": process.env.REACT_APP_CLIENT_ID,
+    "client_secret": process.env.REACT_APP_CLIENT_SECRET,
+    "grant_type": "client_credentials"
+}
 
 function get_token(callback, access_token) {
+    console.log(access_token)
     if (access_token != "") {
         callback(access_token)
         return
@@ -47,7 +47,6 @@ function get_featured_posts(access_token) {
         if (xhr.readyState == 4) {
             if (xhr.status == 200) {
                 var posts = JSON.parse(xhr.response)['data']['posts']['edges']
-                console.log(posts)
                 
                 var table = document.querySelector('.product_hunt');
                 for (var i in posts) {
@@ -69,7 +68,6 @@ function get_featured_posts(access_token) {
                         <p class="tagline">${tagline}</p>
                         
                     `;
-                    console.log(new_elem)
                     table.appendChild(new_elem);
                 }
             }
@@ -82,5 +80,5 @@ function get_featured_posts(access_token) {
     xhr.send(JSON.stringify(FEATURED_QUERY));
 }
 
-get_token(get_featured_posts, "P1QshzX1ZU9-eZ39_8MX6VOCa97xvpZasfklRxU1bkI")
+get_token(get_featured_posts, process.env.REACT_APP_ACCESS_TOKEN);
 //get_featured_posts()

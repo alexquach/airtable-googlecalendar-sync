@@ -6,7 +6,7 @@ const Plot = createPlotlyComponent(Plotly);
 var WEEKDAYS = ["Mon", "Tues", "Wed", "Thu", "Fri", "Sat", "Sun"]
 
 var Airtable = require('airtable');
-var base = new Airtable({apiKey: 'keyXJnM7PboM0o2aI'}).base('apppukxJK1fMLPF9l');
+var base = new Airtable({apiKey: process.env.REACT_APP_AIRTABLE_ID}).base(process.env.REACT_APP_AIRTABLE_BASE);
 
 
 function PushupPlot() {
@@ -35,7 +35,7 @@ function PushupPlot() {
             records.forEach(function(record) {
                 var amount = record.get("Amount");
                 var weekday = WEEKDAYS[record.get("Weekday") - 1];
-                console.log(weekday);
+                // console.log(weekday);
         
                 var indx = weekday_order.indexOf(weekday);
                 if (indx < 0) {
@@ -54,8 +54,8 @@ function PushupPlot() {
             fetchNextPage();
         
         }, function done(err) {
-            console.log(weekday_order);
-            console.log(weekday_counts);
+            // console.log(weekday_order);
+            // console.log(weekday_counts);
             if (err) { console.error(err); return; }
 
             setWeekday_order(weekday_order);

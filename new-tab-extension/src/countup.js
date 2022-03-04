@@ -17,7 +17,7 @@ function Countup() {
       if (document.hasFocus()) {
         setAge("2001/01/12", setYear, setFractionYear)
       }
-    }, 500);
+    }, 1000);
 
     setAge("2001/01/12", setYear, setFractionYear)
   })
